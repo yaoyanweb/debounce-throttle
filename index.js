@@ -30,8 +30,8 @@ dom.onclick = function(){
     如果有第二次，说明是频繁触发，就不去执行我们的事件（然后就去观察第三次和 第四次 依此循环）。如果没有触发第二次，就说明不是
     频繁触发，就去执行我们的事件。
 */
-function func(){
-    console.log('ok');
+function func(e){
+    console.log(e);
 }
 
 /* 
