@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2020-08-14 08:06:15
+ * @LastEditTime: 2020-08-19 08:13:40
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /debounce-throttle/index.js
+ */
 /* 
     函数的防抖和 节流
     防抖：在用户频繁触发的时候，我们只识别一次（识别第一次或者识别最后一次）【我们可以设置频繁的间隔时间】
@@ -48,6 +56,8 @@ dom.onclick = function(){
 
 
 /**
+ * debounce: 实现函数的防抖（目的是频繁触发中只执行一次）
+ * 
  * @param {type} func 需要执行的函数
  * @param {type} wait  检测防抖的间隔频率 
  * @param {type} immediate 是否立即执行，（如果为true是控制第一次触发的时候执行，
@@ -69,4 +79,42 @@ function debounce(func,wait = 500,immediate = false){
         now?func.call(this,...params):null;
     }
 }
-dom.onclick = debounce(func)
+
+
+
+/**
+ * 
+ * throttle: 实现函数节流（目的是为了频繁触发中缩减频率）
+ *  
+ * @param {type} func 需要执行的函数
+ * @param {type} wait  自己设定的间隔时间（频率） 
+ * return 放回一个可以调用的执行函数
+ */
+function throttle(func,wait = 500){
+    let time = null,
+        previous = 0; //记录上一次执行时间点
+    return function anonymous(...params){
+        // 记录当前执行时间
+        let now = new Date(), //当前操作时间
+            remaining = wait - (now - previous); // 当前时间 减去上一次记录时间
+
+            if(remaining <= 0){
+                // 如果两次间隔时间超过频率，就直接把方法执行
+                previous = now;
+                func.call(this,...params);
+            }else if(!time){
+                // 如果两次间隔时间没有超过频率，说明还没有达到触发标准。就设置定时器等待即可
+                time = setTimeout(()=>{
+                    clearTimeout(time);
+                    previous = now;
+                    func.call(this,...params);
+                },remaining)
+            }
+    }
+}
+
+ dom.onclick = throttle(func);
+
+// dom.onclick = func;
+
+
